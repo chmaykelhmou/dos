@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<meta name="description" content=""> 
+<meta name="author" content="">
+<meta name="mobile-web-app-capable" content="yes">
+  <title>CARTOON**TV**</title>
+<link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+
+<link rel="icon" type="image/x-icon" href="https://www.iconarchive.com/download/i31653/sykonist/south-park/Cartman-normal.ico">
+  
+<script src="https://unpkg.com/jquery@1.11.2/dist/jquery.min.js"></script> <script src="https://unpkg.com/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+
+<script src="https://unpkg.com/video.js/dist/alt/video.core.js"></script> <script src="https://unpkg.com/@videojs/http-streaming@1/dist/videojs-http-streaming.js"></script>
+
+
+  
+  
+  
+  <style>
+    body {
+      background-color: black;
+      margin: 0;
+      padding: 0;
+    }
+
+    
+html, body {
+     height: 100%;
+     width: 100%;
+}
+    
+    #videoContainer {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #videoPlayer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    
+    .vjs-big-play-button:focus {
+      border: 11px solid white;
+      background-color: #0000FF;
+      
+    }
+
+  .video-js .vjs-control-bar {
+      width: 100% !important;
+      color: #FFFFFF;
+      background-color: #0000FF;
+}
+    
+    .video-js .vjs-big-play-button {
+      background-color: #0000ff;
+  
+}
+
+.popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #0000FF;
+      color: #FFFFFF;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 2;
+        }
+
+     #searchButton {        
+      background-color: #0000FF;
+      border-radius: 4px;
+      color: white;
+      width: 100%;
+      font-size: 12px;
+      line-height: 0px;
+      min-height: 11px;                 
+      padding: 10px 16px;
+      border: 1px solid white;
+      box-shadow: rgb(0 0 0 / 12%) 0px 1px 3px, rgb(0 0 0 / 24%) 0px 1px 2px;
+      transition: all 0.1s ease 0s;
+      z-index: 2;
+     }
+
+    #videoInput {
+      background-color: #000000;
+      border: 1px solid #fff;      
+      color: white;
+      font-size: small;
+      text-align: center;
+      border-radius: 4px;
+      
+    } 
+    
+    #mytbl {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: block;                  
+      z-index: 1;
+    }
+
+    
+ .vjs-progress-holder .vjs-play-progress {
+     background-color: white !important;
+     height: 18px !important;
+     
+        }
+
+.vjs-load-progress div {
+     background-color: red !important;
+     height: 18px !important;
+        }
+
+.vjs-control-bar {
+   
+     font-size: 10px !important;
+  
+}
+.right-control, .left-control, .compteur, list-control {
+
+    background-color: #0000FF !important;
+    color: rgb(255,255,0) !important;
+    font-size: 10px !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0px !important;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+
+.sidenav {
+  height: 100% !important;
+  width: 0;
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  background-color: #00f;
+  overflow-y: scroll;
+  transition: 0.5s;
+  padding-top: 7px;
+  opacity: 0.8;
+  
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #fff;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: rgb(255, 255, 0);
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+  </style>
+</head>
+<body>
+  <!-- Conteneur pour la vidéo -->
+  <div id="videoContainer">
+    <!-- Lecteur vidéo --->
+    <video id="videoPlayer" class="video-js vjs-default-skin" controls autoplay poster="https://i.pinimg.com/originals/07/85/e7/0785e7dae354aba21aff4c3752166011.gif">
+      
+    </video>
+  </div>
+
+  <table id="mytbl" cellpadding="2" cellspacing="0" border="0"><tr></tr>
+   <td><input type="text" list="videoOptions" id="videoInput" placeholder="mots ou num">
+  <datalist id="videoOptions">
+    <option value="mgm"></option>
+    <option value="disney"></option>
+    <option value="looney"></option>
+    <option value="castle"></option>
+    <option value="dragon"></option>
+    <option value="droopy"></option>
+    <option value="blanche"></option>
+    <option value="peter"></option>
+    <option value="lucky"></option>
+    <option value="oggy"></option>
+    <option value="shaun"></option>
+    <option value="tom"></option>
+    <option value="tarzan"></option>
+    <option value="alice"></option>
+    
+  </datalist> </td><td><button id="searchButton">Rechercher</button></td>
+ 
+ <div class="popup" id="popup">
+        <p></p>
+    </div>
+  <div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn">&times;</a>
+<a class="openbtn" data-link="http://htvajyalint.mada.ps:8888/ajyalint/index.m3u8">ajyal</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/625ec7a1c853fd00073b38fd/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Series</a>
+<a class="openbtn" data-link="https://the-pet-collective-international-es.samsung.wurl.tv/playlist.m3u8">Pet collective gags</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/62e91ea20d06110008396079livestitch/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=&profilesFromStream=true">Funny videos</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/60afa1508284e60007163c08/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Juste pour rire</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/60a286daf888610007669801/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Gags</a>
+<a class="openbtn" data-link="https://failarmy-international-ca.samsung.wurl.tv/playlist.m3u8">Failarmy gags</a>   
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/5ed6828192e8b3000743ef61/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Wipeout</a>
+<a class="openbtn" data-link="https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5e1452156c07b50009d0230e/master.m3u8?advertisingId=channel&appName=rokuchannel&appVersion=1.0&bmodel=bm1&channel_id=channel&content=channel&content_rating=ROKU_ADS_CONTENT_RATING&content_type=livefeed&coppa=false&deviceDNT=1&deviceId=channel&deviceMake=rokuChannel&deviceModel=web&deviceType=rokuChannel&deviceVersion=1.0&embedPartner=rokuChannel&genre=ROKU_ADS_CONTENT_GENRE&is_lat=1&platform=web&rdid=channel&studio_id=viacom&tags=ROKU_CONTENT_TAGS">champion strongman</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/60803e541a829e0008e91641/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Yoga</a>  
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/618d4ea306d23b0007356080/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Motors</a>
+<a class="openbtn" data-link="https://shls-mbc3-prod-dub.shahid.net/out/v1/d5bbe570e1514d3d9a142657d33d85e6/index.m3u8">mbc3</a>  
+<a class="openbtn" data-link="https://streams.spacetoon.com/live/stchannel/smil:livesmil.smil/playlist.m3u8">Spacetoon</a>
+<a class="openbtn" data-link="https://shls-masr2-ak.akamaized.net/out/v1/dc4aa87372374325a66be458f29eab0f/index.m3u8">Cartoon network</a> 
+<a class="openbtn" data-link="https://admdn5.cdn.mangomolo.com/majid/smil:majid.stream.smil/playlist.m3u8">Majid</a>
+<a class="openbtn" data-link="https://gulli-bil-arabi-prod-dub-ak.akamaized.net/out/v1/5454d215afba410c90b233f400730958/index.m3u8">Gulli arabic</a>   
+<a class="openbtn" data-link="https://shls-tiji-tv-prod-dub.shahid.net/out/v1/98f46736bd8c4404b67e4b7a38cc8976/index.m3u8">Tiji</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/611e6ddc7fcd580007d1eb5f/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Animation game</a>   
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/5f8eb99ff17815000784a3b0/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Animation series kids</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/611e6a9b4bb5790007a6f0f8/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Retro toons</a>    
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/618e34ac4a270700077b1f32/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">South park</a>    
+<a class="openbtn" data-link="https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5ffc8c345822750007e167de/master.m3u8?advertisingId=&appName=web&appVersion=5.14.0-0f5ca04c21649b8c8aad4e56266a23b96d73b83a&app_name=web&clientDeviceType=0&clientID=6fbead95-26b1-415d-998f-1bdef62d10be&clientModelNumber=na&deviceDNT=false&deviceId=6fbead95-26b1-415d-998f-1bdef62d10be&deviceLat=48.8582&deviceLon=2.3387&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=88.0.4324.150&marketingRegion=FR&serverSideAds=false&sessionID=cc7dc550-6be3-11eb-9c02-0242ac110002&sid=cc7dc550-6be3-11eb-9c02-0242ac110002&userId=">Bob l'éponge</a>
+<a class="openbtn" data-link="https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5f8eba14a4ffb8000764e950/master.m3u8?advertisingId=&appName=web&appVersion=5.14.0-0f5ca04c21649b8c8aad4e56266a23b96d73b83a&app_name=web&clientDeviceType=0&clientID=6fbead95-26b1-415d-998f-1bdef62d10be&clientModelNumber=na&deviceDNT=false&deviceId=6fbead95-26b1-415d-998f-1bdef62d10be&deviceLat=48.8582&deviceLon=2.3387&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=88.0.4324.150&marketingRegion=FR&serverSideAds=false&sessionID=cc7dc550-6be3-11eb-9c02-0242ac110002&sid=cc7dc550-6be3-11eb-9c02-0242ac110002&userId=">Supertoons</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/5f8ed9461b35690007a0bc3a/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Paranormal</a> 
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/60925a44f0350600075a1fdc/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Animaux</a>
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/611e7811eb9daf000764cbfd/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Voyage</a>   
+<a class="openbtn" data-link="http://stitcher-ipv4.pluto.tv/v1/stitch/embed/hls/channel/611e771e2f5f180007002224/master.m3u8?deviceType=unknown&deviceMake=unknown&deviceModel=unknown&deviceVersion=unknown&appVersion=unknown&deviceLat=90&deviceLon=0&deviceDNT=TARGETOPT&deviceId=PSID&advertisingId=PSID&us_privacy=1YNY&profileLimit=&profileFloor=&embedPartner=">Histoire</a>
+  </div>
+  <script>
+    
+  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("contextmenu", (event) => {
+         event.preventDefault();
+         showPopup("<p>c'est interdit!!!</p>");
+      });
+          var videos =  ["https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Pinto%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Prefabricated%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Prehistoric%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Psychedelic%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Put%20Put%2C%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Reel%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Rock-A-Bye%20Pinky.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Salmon%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Sherlock%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Shocking%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Sink%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Sky%20Blue%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Slink%20Pink.mp4" , 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Smile%20Pretty%2C%20Say%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Spark%20Plug%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Sprinkle%20Me%20Pink.mp4",
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Star%20Pink.mp4",
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-String%20Along%20In%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Super%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Supermarket%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Hand%20is%20Pinker%20than%20the%20Eye.mp4",
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Blueprint.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Flea.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Package%20Plot.mp4",
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Phink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Pill.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Pro.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Quarterback.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20Tail%20Fly.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Pink%20of%20Bagdad.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-The%20Scarlet%20Pinkernel.mp4",
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Therapeutic%20Pink.mp4",
+  "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Think%20Before%20You%20Pink.mp4",
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Tickled%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Toro%20Pink.mp4" ,
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Trail%20of%20Lonesome%20Pink.mp4",
+ "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Twinkle%2C%20Twinkle%20Little%20Pink.mp4", 
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Twinkle%2C%20Twinkle%2C%20Little%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Vitamin%20Pink.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-We%20Give%20Pink%20Stamps.mp4",
+            "https://www.archive.org/download/ThePinkPanther-cartoons/The%20Pink%20Panther%20in%20-Yankee%20Doodle%20Pink.mp4",
+            "https://archive.org/download/the-pink-panther-cartoon-collection/001%20The%20Pink%20Phink%20%28Dec%2018%2C%201964%29.ia.mp4",
+        "https://archive.org/download/the-pink-panther-cartoon-collection/002%20Pink%20Pajamas%20%28Dec%2025%2C%201964%29.ia.mp4",
+        "https://archive.org/download/the-pink-panther-cartoon-collection/001%20The%20Pink%20Phink%20%28Dec%2018%2C%201964%29.mp4",
+              "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20081%20-%20Posse%20Cat%20%5B1952%5D.mp4",
+  "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20082%20-%20Hic-cup%20Pup%20%5B1952%5D.mp4",
+  "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20083%20-%20Little%20School%20Mouse%20%5B1952%5D.mp4",
+  "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20084%20-%20Baby%20Butch%20%5B1953%5D.mp4", 
+  "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20085%20-%20Mice%20Follies%20%5B1953%5D.mp4",
+  "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20086%20-%20Neapolitan%20Mouse%20%5B1953%5D.mp4", 
+  "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20087%20-%20Downhearted%20Duckling%20%5B1953%5D.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20088%20-%20Pet%20Peeve%20%5B1954%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20089%20-%20Touch%C3%A9%2C%20Pussy%20Cat%21%20%5B1954%5D.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20090%20-%20Southbound%20Duckling%20%5B1954%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20091%20-%20Pup%20on%20a%20Picnic%20%5B1953%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20092%20-%20Mouse%20for%20Sale%20%5B1953%5D.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20093%20-%20Designs%20on%20Jerry%20%5B1953%5D.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20094%20-%20Tom%20and%20Ch%C3%A9rie%20%5B1955%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20095%20-%20Smarty%20Cat%20%5B1954%5D.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20096%20-%20Pecos%20Pest%20%5B1953%5D.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20097%20-%20That%27s%20My%20Mommy%20%5B1955%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20098%20-%20The%20Flying%20Scorceress%20%5B1955%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20099%20-%20The%20Egg%20and%20Jerry%20%5B1956%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20100%20-%20Busy%20Buddies%20%5B1956%5D%20%28widescreen%29%20%20Excluded%20from%20Classic%20Collection.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20101%20-%20Muscle%20Beach%20Tom%20%5B1956%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20102%20-%20Down%20Beat%20Bear%20%5B1956%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20103%20-%20Blue%20Cat%20Blues%20%5B1956%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20104%20-%20Barbecue%20Brawl%20%5B1956%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20105%20-%20Tops%20with%20Pops%20%5B1956%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20106%20-%20Timid%20Tabby%20%5B1956%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20107%20-%20Feedin%27%20the%20Kiddie%20%5B1956%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20108%20-%20Mucho%20Mouse%20%5B1956%5D%20%28widescreen%29.mp4", 
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20109%20-%20Tom%27s%20Photo%20Finish%20%5B1956%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20110%20-%20Happy%20Go%20Ducky%20%5B1956%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20111%20-%20Royal%20Cat%20Nap%20%5B1957%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20112%20-%20The%20Vanishing%20Duck%20%5B1957%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20113%20-%20Robin%20Hoodwinked%20%5B1957%5D%20%28widescreen%29.mp4",
+            "https://www.archive.org/download/tom-and-jerry-all-114-episodes/Tom%20and%20Jerry%20-%20114%20-%20Tot%20Watchers%20%5B1957%5D%20%28widescreen%29.mp4",
+              "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/001%20Blanche.Neige.Et.Les.Sept.Nains-Hand.D-.-1937-fr.mp4", 
+                  "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/002%20Pinocchio.PLAGIAT%20DE%20roman%20de%20Carlo%20Collodi-Ferguson.N-.-1940-fr.mp4",
+                      "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/003%20Fantasia-Sharpsteen.B-1940-fr.mp4", 
+                    "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/006%20Bambi.PLAGIAT%20DE%20Roman%20de%20Felix%20Salten-Hand.D-.-1942-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/016%20Cendrillon.PLAGIAT%20DE%20Contes%20de%20Charles%20Perrault%20et%20les%20fr%C3%A8res%20Grimm-Jackson.W-.-1950-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/017%20Alice.Au.Pays.Des.Merveilles.PLAGIAT%20DE%20Romans%20de%20Lewis%20Carroll-Luske.H-.-1951-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/018%20Peter.Pan.PLAGIAT%20DE%20Th%C3%A9%C3%A2tre%20de%20JM%20Barrie-Luske.H-.-1953-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/020%20La.Belle.Au.Bois.Dormant.PLAGIAT%20DE%20Charles%20-Reitherman.W-.-1959-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/024%20Le.Livre.De.La.Jungle.PLAGIAT%20DE%20Rudyard%20Kipling-Reitherman.W-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/027%20Robin.Des.Bois.D%27Une%20l%C3%A9gende%20m%C3%A9di%C3%A9vale%20anglaise%20et%20le%20Roman%20de%20Renart-Reitherman.W-.-1973-fr.mp4", 
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/039%20La%20Belle%20Et%20La%20B%C3%AAte.Beauty%20And%20The%20Beast.DE%20Le%20conte%20de%20Jeanne-Marie%20Leprince%20de%20Beaumont-1991-Fr%20.mp4", 
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/043%20Le.Roi.Lion-Allers.R-.-1994-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/062%20Fantasia.2000-.-.-1999-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/079%20Le.Livre.De.La.Jungle.2-Favreau.J-.-2003-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/Bu03%20Alice.Au.Pays.Des.Merveilles-Burton.T-Depp.J_Wasikowska.M_Lucas.M-2010-fr.mp4",
+                         "https://archive.org/download/01-blanche.-neige.-et.-les.-sept.-nains-hand.-d-.-1937-fr/Mo%20Le%20Royaume%20Des%20Chats-Hiroyuki%20Morita-.-02-fr.mp4",
+                           "https://www.archive.org/download/40animeHD/101%20Dalmatians%20II%20Patchs%20London%20Adventure%20%5B2003%5D%201080p%20Arabic.mp4", 
+                         "https://www.archive.org/download/40animeHD/BeautyAndTheBeast19911080pArabic.mp4",
+                         "https://www.archive.org/download/40animeHD/Brave20121080pArabic.mp4",
+                         "https://www.archive.org/download/40animeHD/Cars220111080pArabic.mp4",
+                         "https://www.archive.org/download/40animeHD/FindingNemo20031080pArabic.mp4",
+                         "https://www.archive.org/download/40animeHD/Tarzan19991080pArabic.mp4",
+                         "https://www.archive.org/download/40animeHD/Toy%20Story%203%20%5B2010%5D%201080p%20Arabic.mp4",
+                         "https://archive.org/download/kung-fu-panda-3-on-fxm/Kung%20Fu%20Panda%203%20on%20FXM.mp4",
+"https://archive.org/download/DubbingEgyptianAnimation/peter.Pan%201.mp4",
+"https://archive.org/download/DubbingEgyptianAnimation/peter.Pan%202.mp4",
+    "https://archive.org/download/DubbingEgyptianAnimation/Ratatouille.2007.mp4",
+             "https://archive.org/download/DubbingEgyptianAnimation/Pinocchio.arabic.mp4",
+                         "https://archive.org/download/larche-magique-de-noe-dessin-anime/L%27arche%20Magique%20de%20No%C3%A9%20-%20Dessin%20anim%C3%A9.ia.mp4",
+              "https://ww.supercartoons.net/video/Tom-And-Jerry-Flirty-Birdy.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-The-Lonesome-Mouse.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Puss-Gets-The-Boot.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-The-Mouse-From-HUNGER.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Advance-And-Be-Mechanized.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Jerry-Go-Round.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Guided-Mouse-Ille.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Thats-My-Mommy.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-The-Flying-Sorceress.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-The-Egg-And-Jerry.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Tops-With-Pops.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Timid-Tabby.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Happy-Go-Ducky.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-The-Vanishing-Duck.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Puppy-Tale.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Southbound-Duckling.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Designs-On-Jerry.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Mouse-For-Sale.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Smitten-Kitten.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Push-Button-Kitty.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Springtime-For-Thomas.mp4",
+     "https://ww.supercartoons.net/video/Tom-And-Jerry-Cat-Fishin.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Professor-Tom.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-The-Cat-And-The-Mermouse.mp4",
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Love-That-Pup.mp4", 
+    "https://ww.supercartoons.net/video/Tom-And-Jerry-Tennis-Chumps.mp4",
+  "https://ww.supercartoons.net/video/Tom-And-Jerry-The-Yankee-Doodle-Mouse.mp4",
+  "https://ww.supercartoons.net/video/Tom-And-Jerry-Texas-Tom.mp4",
+  "https://ww.supercartoons.net/video/Tom-And-Jerry-Quiet-Please.mp4",
+ "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%201%20-%20Episode%2001%20-10%20%5B1HOUR%5D.mp4",
+"https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%201%20-%20Episode%2011%20-20%20%5B1HOUR%5D.mp4", 
+  "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%201%20-%20Episode%2021%20-%2030%20%20%5B1HOUR%5D.mp4", 
+                  "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%201%20-%20Episode%2031%20-%2040%20%5B1HOUR%5D.mp4", 
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%202%20-%20Episode%2001%20-10%20%5B1HOUR%5D.mp4", 
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%202%20-%20Episodes%2011%20-%2020%20%5B1HOUR%5D.mp4", 
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%202%20-%20Episodes%2021-30%20%5B1HOUR%5D.mp4",
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%202%20-%20Episodes%2031-40%20%5B1HOUR%5D.mp4",
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%203%20-%20Episodes%201-5%20%5B30%20MINS%5D.mp4",
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%203%20-%20Episodes%2011-15%20%5B30%20MINS%5D.mp4",
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%203%20-%20Episodes%2016-20%20%5B30%20MINS%5D.mp4", 
+                         "https://archive.org/download/ShaunIndo/Shaun%20the%20Sheep%20-%20Season%203%20-%20Episodes%206-10%20%5B30%20MINS%5D.mp4",
+              "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2001.mp4",
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2002.mp4",
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2003.mp4",
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2004.mp4",
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2005.mp4", 
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2006.mp4",
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2007.mp4",
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2008.mp4", 
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2009.mp4", 
+  "https://www.archive.org/download/OggyAndTheCockroachesSeason1Ep02/Oggy%20and%20the%20Cockroaches%20%28Season%201%29%20-%20Ep%2010.mp4",
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Early%20Bird%20Dood%20It%21%20%28Alternative%20Version%29.mp4",                                     
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Early%20Bird%20Dood%20It%21%20%28Reissued%29.mp4",                                    
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Early%20Bird%20Dood%20It%21%20%28Second%20Version%201942%29.mp4",                                    
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Flying%20Bear%20%281941%29.mp4",                                   
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Flying%20Sorceress%20%28TV%20Rip%20Version%29.mp4",                                   
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Little%20Orphan%20%28Metrocolor%20TV%20Version%29.mp4",                                   
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Little%20Orphan%20%28Metrocolor%20Version%29.mp4",
+                                     
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Lonesome%20Mouse%20%28Alternative%20Vrsion%29.mp4",
+                                   
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Lonesome%20Mouse%20%28Reissued%29.mp4",
+                                      
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Midnight%20Snack%20%281941%29.mp4",
+                                      
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Midnight%20Snack%20%28Original%201941%29.mp4",
+                                    
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Midnight%20Snack%20%28Primary%20Reissue%201941%29.mp4",
+                                   
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Milky%20Waif%20%281946%29.mp4",
+                            
+                
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Shooting%20of%20Dan%20McGoo%20%28Original%201945%29.mp4",
+                                
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Shooting%20of%20Dan%20McGoo%20%28Reissued%29.mp4",
+                                 
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Three%20Little%20Pups%20%28Original%201953%29.mp4",
+                          
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Tom%20%26%20Jerry%20Show%20%281975%29.mp4",
+                                
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Tom%20And%20Jerry%20Comedy%20Show%20%281980%29.mp4",
+                                   
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Tom%20and%20Jerry%20Cartoon%20Kit%20%281962%29.mp4",
+                              
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Truce%20Hurts%20%281948%29.mp4",
+                                      
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Truce%20Hurts%20%28Original%201948%29.mp4",
+                                 
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Uninvited%20Pest%20%281943%29.mp4",
+                                 
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Yankee%20Doodle%20Mouse%20%281943%29.mp4",
+                                    
+                  "https://www.archive.org/download//mgm-cartoon-originals/The%20Yankee%20Doodle%20Mouse%20%28Acamedy%20Award%20Remake%20Version%29.mp4",
+                                 
+                  "https://www.archive.org/download//mgm-cartoon-originals/Tom%20and%20Ch%C3%A9rie%20%281955%29.mp4",
+                                      
+                  "https://www.archive.org/download//mgm-cartoon-originals/Tom%20and%20Jerry%20in%20The%20Hollywood%20Bowl%20%281950%20MGM%20T%26J%20Musical%29.mp4",
+                                    
+                  "https://www.archive.org/download//mgm-cartoon-originals/Tom%20and%20Jerry%20in%20The%20Hollywood%20Bowl%20%28Deluxe%20Version%29.mp4",
+                                 
+                  "https://www.archive.org/download//mgm-cartoon-originals/Tom%20and%20Jerry%20in%20The%20Hollywood%20Bowl%20%28MGM%20Metrocolor%20Musical%20Version%29.mp4",              
+                  "https://www.archive.org/download//mgm-cartoon-originals/Tom%20and%20Jerry%20in%20the%20Hollywood%20Bowl%20%28Original%201950%29.mp4",
+                                   
+                  "https://www.archive.org/download//mgm-cartoon-originals/Tom%27s%20Photo%20Finish%20%281957%29.mp4",
+                              
+                  "https://www.archive.org/download//mgm-cartoon-originals/Tot%20Watchers%20%281958%29.mp4",
+                                      
+                  "https://www.archive.org/download//mgm-cartoon-originals/Trap%20Happy%20%28Original%20B%26W%201946%29.mp4",
+                                     
+                  "https://www.archive.org/download//mgm-cartoon-originals/Trap%20Happy%20%28Original%20Color%201946%29.mp4",
+                               
+                  "https://www.archive.org/download//mgm-cartoon-originals/Wee-Willy%20Wildcat%20%281953%29.mp4",
+                   
+        "https://archive.org/download/mgm-cartoon-originals/Advance%20and%20Be%20Mechanized%20%281967%29.ia.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/BLITZ%20WOLF%20%28Reissue%201942%29.ia.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/Baby%20Butch%20%281954%29.ia.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/Baby%20Puss%20%28Original%201943%29.ia.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/Barbecue%20Brawl%20%281956%29.ia.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/Bats%20in%20the%20Belfry%20%281942%29.ia.mp4",        
+        "https://archive.org/download/mgm-cartoon-originals/Bats%20in%20the%20Belfry%20%281942%29.ia.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/Batty%20Baseball%20%281944%29.ia.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-Water-Water-Every-Hare.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/Big%20Heel-Watha%20%281944%29.ia.mp4",
+        "https://archive.org/download/mgm-cartoon-originals/Casanova%20Cat%20%281951%29.ia.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-Big-House-Bunny.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-Rabbit-of-Seville.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-The-Ducksters.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-The-Solid-Tin-Coyote.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-The-Whizzard-of-Ow.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-Chariots-of-Fur.mp4",
+        "https://ww.topcartoons.tv/video/Looney-Tunes-Fast-and-Furry-ous.mp4",
+        "https://ww.topcartoons.tv/video/Tom-And-Jerry-Puss-Gets-The-Boot.mp4",
+        "https://ww.topcartoons.tv/video/Tom-And-Jerry-The-Truce-Hurts.mp4",
+        
+        "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t01.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t02.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t03.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t04.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t05.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t06.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t07.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t08.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t09.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t10.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t11.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%201_t12.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t01.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t02.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t03.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t04.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t05.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t07.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t08.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t09.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t10.mp4", 
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t12.mp4",
+            "https://www.archive.org/download/tex-averys-droopy/TEX%20AVERYS%20DROOPY%20DISC%202_t13.mp4",       
+          "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/At02b%20Happy-Go-Nutty-Gag%20Censur%C3%A9%20%C3%A0%203.22.mp4",  
+        "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/At03a%20Henpecked%20Hoboes-Gag%20Censur%C3%A9%20%C3%A0%204.24.mp4",  
+            "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/Bb%20Bugs%20Bunny.Merrie.Melodies.mp4",
+  "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/Ea%20Mary.Et.Max-Elliot.A-.-2009-fr.mp4", 
+ "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/FBr%20Les%20Shadoks1-Borg.R_Rouxel.J_Couturier.JP%20Pi%C3%A9plu.Cl-1968.mp4", 
+  "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/FBr%20Les%20Shadoks2-Borg.R_Rouxel.J_Couturier.JP%20Pi%C3%A9plu.Cl-1969..mp4", 
+ "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/FBr%20Les%20Shadoks3-Borg.R_Rouxel.J_Couturier.JP%20Pi%C3%A9plu.Cl-1972.mp4", 
+ "https://www.archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/Muhammad%20Le%20Dernier%20Proph%C3%A8te-Rich.R-01-fr.mp4", 
+            "https://www.archive.org/download/tascv3/Billy%20Boy.mp4",  
+            "https://www.archive.org/download/tascv3/Blitz%20Wolf.mp4", 
+            "https://www.archive.org/download/tascv3/Cellbound.mp4", 
+            "https://www.archive.org/download/tascv3/Cock-A-Doodle%20Dog.mp4", 
+  "https://www.archive.org/download/tascv3/Deputy%20Droopy.mp4",  
+            "https://www.archive.org/download/tascv3/Happy-Go-Nutty.mp4", 
+  "https://www.archive.org/download/tascv3/Jerky%20Turkey.mp4", 
+ "https://www.archive.org/download/tascv3/King-Size%20Canary.mp4",  
+            "https://www.archive.org/download/tascv3/Little%20%27Tinker.mp4",  
+            "https://www.archive.org/download/tascv3/Little%20Johnny%20Jet.mp4",  
+            "https://www.archive.org/download/tascv3/Northwest%20Hounded%20Police.mp4",  
+            "https://www.archive.org/download/tascv3/One%20Ham%27s%20Family.mp4", 
+  "https://www.archive.org/download/tascv3/Rock-A-Bye%20Bear.mp4",  
+            "https://www.archive.org/download/tascv3/Se%C3%B1or%20Droopy.mp4",  
+            "https://www.archive.org/download/tascv3/Slap%20Happy%20Lion.mp4", 
+  "https://www.archive.org/download/tascv3/Swing%20Shift%20Cinderella.mp4",   
+            "https://www.archive.org/download/tascv3/The%20Crackpot%20Quail.mp4", 
+ "https://www.archive.org/download/tascv3/The%20Early%20Bird%20Dood%20It.mp4", 
+            "https://www.archive.org/download/tascv3/The%20Shooting%20of%20Dan%20McGoo.mp4",
+            "https://www.archive.org/download/tascv3/What%20Price%20Fleadom.mp4", 
+            "https://www.archive.org/download/tascv3/Wild%20and%20Woolfy.mp4",  "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-bad.luck.blackie.1949.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-batty.baseball.1944.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-big.heel-watha.1944.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-daredevil.droopy.1951.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-dumb-hounded.1943.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-garden.gopher.1950.1080p.bluray.x264-regret.mp4", 
+  "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-hound.hunters.1947.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-lonesome.lenny.1946.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-red.hot.rangers.1947.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-red.hot.riding.hood.1943.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-screwball.squirrel.1944.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-symphony.in.slang.1951.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-the.chump.champ.1950.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-the.hick.chick.1946.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-the.peachy.cobbler.1950.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-the.screwy.truant.1945.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-wags.to.riches.1949.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-whats.buzzin.buzzard.1943.1080p.bluray.x264-regret.mp4", 
+ "https://www.archive.org/download/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/Tex.Avery.Screwball.Classics.Volume.1.1943-1951.1080p.BluRay.x264-REGRET/tex.avery-who.killed.who.1943.1080p.bluray.x264-regret.mp4",
+  "https://archive.org/download/red-hot-riding-hood-1943_202109/Red%20Hot%20Riding%20Hood%20%281943%29.mp4",
+  "https://archive.org/download/dumb-hounded-1943-restored/Dumb-Hounded%20%281943%29.mp4",
+  "https://archive.org/download/whats-buzzin-buzzard-1943-restored/007%20-%20What%27s%20Buzzin%27%20Buzzard%20%281943%29.mp4",
+  "https://archive.org/download/the-screwy-truant-1945-restored/012%20-%20The%20Screwy%20Truant%20%281945%29.mp4",
+  "https://archive.org/download/doggone-tired-1949/Doggone%20Tired%20%281949%29.mp4",
+  "https://archive.org/download/slap-happy-lion-1947/Slap%20Happy%20Lion%20%281947%29.mp4",
+    "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/01.%20Introduction%20by%20Leonard%20Maltin%20%28DVD%201%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/02.%20The%20Chain%20Gang%20%281930%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/03.%20On%20Ice%20%281935%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/04.%20Pluto%27s%20Quin-puplets%20%281937%29.mp4",  "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/05.%20Beach%20Picnic%20%281939%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/06.%20Bone%20Trouble%20%281940%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/07.%20Pluto%27s%20Playmate%20%281941%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/08.%20Canine%20Caddy%20%281941%29.mp4", "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/09.%20Lend%20a%20Paw%20%281941%29.mp4", "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/10.%20Pluto%2C%20Junior%20%281942%29.mp4", "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/11.%20The%20Army%20Mascot%20%281942%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/12.%20The%20Sleepwalker%20%281942%29.mp4",
+  "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/13.%20T-Bone%20For%20Two%20%281942%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/14.%20Pluto%20At%20the%20Zoo%20%281942%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/15.%20Introduction%20by%20Leonard%20Maltin%20%28DVD%202%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/16.%20Pluto%20and%20the%20Armadillo%20%281943%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/17.%20Private%20Pluto%20%281943%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/18.%20Springtime%20For%20Pluto%20%281944%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/19.%20First%20Aiders%20%281944%29.mp4",
+  "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/20.%20Dog%20Watch%20%281945%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/21.%20Canine%20Casanova%20%281945%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/22.%20The%20Legend%20of%20Coyote%20Rock%20%281945%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/23.%20Canine%20Patrol%20%281945%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/24.%20Pluto%27s%20Kid%20Brother%20%281946%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/25.%20In%20Dutch%20%281946%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/26.%20Squatter%27s%20Rights%20%281946%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/27.%20The%20Purloined%20Pup%20%281946%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/28.%20Pluto%27s%20Housewarming%20%281947%29.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/29.%20From%20the%20Vault%20-%20Introduction.mp4",
+ "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/30.%20From%20the%20Vault%20-%20Pantry%20Pirate%20%281940%29.mp4",   
+  "https://www.archive.org/download/WDTWaveFour_TheCompletePluto/31.%20From%20the%20Vault%20-%20A%20Gentleman%27s%20Gentleman%20%281941%29.mp4",
+  "https://archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/Bb%20Bugs%20Bunny.Merrie.Melodies.mp4",
+  "https://archive.org/download/at-01-tex.-avery.-integral.-1-avery.-t-.-.-fr/Muhammad%20Le%20Dernier%20Proph%C3%A8te-Rich.R-01-fr.mp4",
+
+            "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E43%20Broom-Stick%20Bunny.mp4",
+ "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E44%20A%20Witchs%20Tangled%20Hare.mp4",
+            "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E45%20A-Haunting%20We%20Will%20Go.mp4", 
+            "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E46%20Feed%20the%20Kitty.mp4",
+  "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E47%20Kiss%20Me%20Kat.mp4",
+  "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E48%20Feline%20Frame-Up.mp4",
+  "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E49%20From%20A%20to%20Z-Z-Z-Z.mp4", 
+            "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20E50%20Boyhood%20Daze.mp4", 
+            "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20Extras%2090%20Day%20Wondering.mp4",
+            "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20Extras%20A%20Hitch%20in%20Time.mp4", 
+            "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20Extras%20Museum%20Scream.mp4",
+ "https://www.archive.org/download/LooneyTunesPlatinumCollectionVolumeOneE02BaseballBugs/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20720p%20x264%20Phun%20Psyz/Looney%20Tunes%20Platinum%20Collection%20Volume%20One%20Extras%20The%20Door.mp4",
+            "https://archive.org/download/disney-animated-shorts-s-1937e-14-lonesome-ghosts/Disney%20Animated%20Shorts%20-%20s1937e14%20-%20Lonesome%20Ghosts.mp4",
+          "https://archive.org/download/merriemelodieswithwoodywoodpeckercartoon1995USdubbedversion1/merriemelodieswithwoodywoodpeckercartoon1995USdubbedversion1.mp4",
+          "https://archive.org/download/the-lyin-mouse-1937/The%20Lyin%27%20Mouse%20%281937%29.mp4",
+          "https://archive.org/download/mickey-mouse_20230409/lv_0_20230409025820.mp4",
+          "https://archive.org/download/mickey-mouse_202103/Mickey%20Mouse%20-%20Mickey%27s%20Circus%20-%201936%20%28HD%29-720p.mp4",
+          "https://archive.org/download/cartoon-classics-vol-3-25-favorite-cartoons-3-hours/1%20Cartoon%20Classics%20-%20Vol_%203_%2025%20Favorite%20Cartoons%20-%203%20Hours.mp4",
+          "https://archive.org/download/17MotherGooseMelodies/1%20-The%20Skeleton%20Dance.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20001%20The%20Wise%20Little%20Hen%20%281934%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20002%20Donald%20and%20Pluto%20%281936%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20003%20Don%20Donald%20%281937%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20004%20Modern%20Inventions%20%281937%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20005%20Donald%27s%20Ostrich%20%281937%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20006%20Self%20Control%20%281938%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20007%20Donald%27s%20Better%20Self%20%281938%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20008%20Donald%27s%20Nephews%20%281938%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20009%20Polar%20Trappers%20%281938%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20010%20Good%20Scouts%20%281938%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20011%20The%20Fox%20Hunt%20%281938%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20012%20Donald%27s%20Golf%20Game%20%281938%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20013%20Donald%27s%20Lucky%20Day%20%281939%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20014%20Hockey%20Champ%20%281939%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20015%20Donald%27s%20Cousin%20Gus%20%281939%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20016%20Beach%20Picnic%20%281939%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20017%20Sea%20Scouts%20%281939%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20018%20Donald%27s%20Penguin%20%281939%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20019%20The%20Autograph%20Hound%20%281939%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/01%20020%20Officer%20Duck%20%281939%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20001%20The%20Riveter%20%281940%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20002%20Donald%27s%20Dog%20Laundry%20%281940%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20003%20Billposters%20%281940%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20004%20Mr.%20Duck%20Steps%20Out%20%281940%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20005%20Put%20-%20Put%20Toubles%20%281940%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20006%20Donald%27s%20Vacation%20%281940%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20007%20Window%20Cleaners%20%281940%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20008%20Fire%20Chief%20%281940%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20009%20Timber%20%281941%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20010%20Golden%20Eggs%20%281941%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20011%20A%20Good%20Time%20for%20a%20Dime%20%281941%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20012%20Early%20to%20Bed%20%281941%29.mp4", 
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20013%20Truant%20Officer%20Donald%20%281941%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20014%20Old%20MacDonald%20Duck%20%281941%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20015%20Donald%27s%20Camera%20%281941%29.mp4",
+            "https://www.archive.org/downloadWDKDiWdZV1/02%20016%20Chef%20Donald%20%281941%29.mp4",
+            "https://archive.org/download/the-early-bird-dood-it-1942_20211012/The%20Early%20Bird%20Dood%20It%21%20%281942%29.ia.mp4",
+            "https://ww.b98.tv/video/Walter-Lantz-Productions-Slingshot-6-78.mp4",
+          "https://ww.b98.tv/video/Walter-Lantz-Productions-Woody-the-Giant-Killer.mp4",
+          "https://ww.b98.tv/video/Walter-Lantz-Productions-Yukon-Have-It.mp4",
+          "https://archive.org/download/DaffyDuckHollywoodDaffy_201712/Daffy%20Duck%20-%20Hollywood%20Daffy.mp4",    
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%A5%D8%A8%D8%AD%D8%A7%D8%B1.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%A8%D8%AD%D8%AB-%D8%B9%D9%86-%D8%A7%D9%84%D9%85%D8%A7%D8%B3.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%AC%D8%B2%D9%8A%D8%B1%D8%A9-%D8%A7%D9%84%D9%85%D8%BA%D9%85%D9%88%D8%B1%D8%A9.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%AC%D8%B2%D9%8A%D8%B1%D8%A9-%D8%A7%D9%84%D9%85%D9%87%D8%AC%D9%88%D8%B1%D8%A9.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%B1%D8%AC%D9%84-%D8%A7%D9%84%D8%A2%D9%84%D9%8A.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%B9%D8%B5%D9%88%D8%B1-%D8%A7%D9%84%D8%AD%D8%AC%D8%B1%D9%8A%D8%A9.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%81%D9%82%D9%85%D8%A9.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%82%D9%85%D8%B1-%D8%A7%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D9%8A.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%82%D9%86%D8%A7%D8%B9.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B1%D8%A7%D8%A9-%D8%A7%D9%84%D8%B9%D8%B4%D8%A7%D8%B1%D9%8A%D8%A9.mp4",  
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%85%D9%87%D9%85%D8%A9-%D8%A7%D9%84%D9%81%D8%B6%D8%A7%D8%A6%D9%8A%D8%A9.mp4",   
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D8%A7%D9%84%D9%85%D9%85%D8%AB%D9%84.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D8%B6%D8%AF-%D8%A7%D9%84%D8%A2%D9%84%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D9%81%D9%8A-%D8%A7%D9%84%D8%A8%D8%AD%D8%B1%D9%8A%D8%A9.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D9%88%D8%A7%D9%84%D8%A8%D8%B9%D9%88%D8%B6%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AA%D8%AF%D8%B1%D9%8A%D8%A8-%D8%A7%D9%84%D8%AD%D8%B5%D8%A7%D9%86.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AA%D8%B3%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%B7%D9%81%D9%84.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AD%D8%A7%D8%B1%D8%B3-%D8%A7%D9%84%D8%B4%D8%A7%D8%B7%D8%A6.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AD%D8%AF%D9%8A%D8%AB-%D8%A7%D9%84%D8%B0%D9%83%D8%B1%D9%8A%D8%A7%D8%AA.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%B3%D8%A8%D8%A7%D9%82-%D8%A7%D9%84%D8%AE%D9%8A%D9%84-%D9%88%D8%A7%D9%84%D8%AB%D9%8A%D8%B1%D8%A7%D9%86.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%B3%D8%B1-%D8%A7%D9%84%D8%A8%D9%88%D9%82.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%B4%D8%A7%D8%B7%D8%A6-%D8%A7%D9%84%D9%85%D8%BA%D8%A7%D9%85%D8%B1%D8%A7%D8%AA.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%83%D9%86%D8%B2-%D9%86%D9%87%D8%B1-%D8%A7%D9%84%D8%A3%D8%AC%D8%B1%D8%A7%D8%B3.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%A7%D8%B3%D8%A9-%D8%A7%D9%84%D9%88%D8%A7%D8%AD%D8%A7%D8%AA.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%A8%D8%A7%D8%B1%D8%A7%D8%A9-%D8%A7%D9%84%D8%B1%D9%83%D8%A8%D9%8A.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%AC%D8%A7%D8%A8%D9%87%D8%A9-%D8%A7%D9%84%D9%82%D8%B1%D8%B4.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%AF%D8%B1%D8%B3%D8%A9-%D8%B1%D9%83%D9%88%D8%A8-%D8%A7%D9%84%D8%AF%D8%B1%D8%A7%D8%AC%D8%A7%D8%AA.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%86%D8%B5%D8%A7%D8%A6%D8%AD-%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A.mp4", 
+ "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A3%D8%AD%D9%84%D8%A7%D9%85-%D9%88%D8%A7%D9%84%D8%AF-%D8%A8%D8%A7%D8%A8%D8%A7%D9%89.mp4", 
+"https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%A3%D8%B9%D9%85%D8%AF%D8%A9-%D8%A7%D9%84%D8%A3%D8%AB%D8%B1%D9%8A%D8%A9.mp4",
+"https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%A5%D8%A8%D8%AD%D8%A7%D8%B1.mp4",
+"https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%A8%D8%AD%D8%AB-%D8%B9%D9%86-%D8%A7%D9%84%D9%85%D8%A7%D8%B3.mp4", 
+"https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%AC%D8%B2%D9%8A%D8%B1%D8%A9-%D8%A7%D9%84%D9%85%D8%BA%D9%85%D9%88%D8%B1%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%AC%D8%B2%D9%8A%D8%B1%D8%A9-%D8%A7%D9%84%D9%85%D9%87%D8%AC%D9%88%D8%B1%D8%A9.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%B1%D8%AC%D9%84-%D8%A7%D9%84%D8%A2%D9%84%D9%8A.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D8%B9%D8%B5%D9%88%D8%B1-%D8%A7%D9%84%D8%AD%D8%AC%D8%B1%D9%8A%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%81%D9%82%D9%85%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%82%D9%85%D8%B1-%D8%A7%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D9%8A.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%82%D9%86%D8%A7%D8%B9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B1%D8%A7%D8%A9-%D8%A7%D9%84%D8%B9%D8%B4%D8%A7%D8%B1%D9%8A%D8%A9.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A7%D9%84%D9%85%D9%87%D9%85%D8%A9-%D8%A7%D9%84%D9%81%D8%B6%D8%A7%D8%A6%D9%8A%D8%A9.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D8%A7%D9%84%D9%85%D9%85%D8%AB%D9%84.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D8%B6%D8%AF-%D8%A7%D9%84%D8%A2%D9%84%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D9%81%D9%8A-%D8%A7%D9%84%D8%A8%D8%AD%D8%B1%D9%8A%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A-%D9%88%D8%A7%D9%84%D8%A8%D8%B9%D9%88%D8%B6%D8%A9.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AA%D8%AF%D8%B1%D9%8A%D8%A8-%D8%A7%D9%84%D8%AD%D8%B5%D8%A7%D9%86.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AA%D8%B3%D9%84%D9%8A%D8%A9-%D8%A7%D9%84%D8%B7%D9%81%D9%84.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AD%D8%A7%D8%B1%D8%B3-%D8%A7%D9%84%D8%B4%D8%A7%D8%B7%D8%A6.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%AD%D8%AF%D9%8A%D8%AB-%D8%A7%D9%84%D8%B0%D9%83%D8%B1%D9%8A%D8%A7%D8%AA.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%B3%D8%A8%D8%A7%D9%82-%D8%A7%D9%84%D8%AE%D9%8A%D9%84-%D9%88%D8%A7%D9%84%D8%AB%D9%8A%D8%B1%D8%A7%D9%86.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%B3%D8%B1-%D8%A7%D9%84%D8%A8%D9%88%D9%82.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D8%B4%D8%A7%D8%B7%D8%A6-%D8%A7%D9%84%D9%85%D8%BA%D8%A7%D9%85%D8%B1%D8%A7%D8%AA.mp4",
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%83%D9%86%D8%B2-%D9%86%D9%87%D8%B1-%D8%A7%D9%84%D8%A3%D8%AC%D8%B1%D8%A7%D8%B3.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%A7%D8%B3%D8%A9-%D8%A7%D9%84%D9%88%D8%A7%D8%AD%D8%A7%D8%AA.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%A8%D8%A7%D8%B1%D8%A7%D8%A9-%D8%A7%D9%84%D8%B1%D9%83%D8%A8%D9%8A.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%AC%D8%A7%D8%A8%D9%87%D8%A9-%D8%A7%D9%84%D9%82%D8%B1%D8%B4.mp4", 
+    "https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%85%D8%AF%D8%B1%D8%B3%D8%A9-%D8%B1%D9%83%D9%88%D8%A8-%D8%A7%D9%84%D8%AF%D8%B1%D8%A7%D8%AC%D8%A7%D8%AA.mp4", 
+"https://archive.org/download/Cartoonita.com/Cartoonita.com%20-%20%D9%86%D8%B5%D8%A7%D8%A6%D8%AD-%D8%A8%D8%A7%D8%A8%D8%A7%D9%8A.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200001%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200002%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200003%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200004%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200005%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200006%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200007%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200008%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200009%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200010%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200011%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200012%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200013%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200014%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200015%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200016%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200017%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200018%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200019%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200020%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200021%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200022%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200023%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200024%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200025%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200026%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200027%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200028%20Arabic%20Dub.mp4",            
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200029%20Arabic%20Dub.mp4", 
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200030%20Arabic%20Dub.mp4",              
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200031%20Arabic%20Dub.mp4",      
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200032%20Arabic%20Dub.mp4",          
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200033%20Arabic%20Dub.mp4",    
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200034%20Arabic%20Dub.mp4",       
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200035%20Arabic%20Dub.mp4",    
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200036%20Arabic%20Dub.mp4",                 
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200037%20Arabic%20Dub.mp4",                
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200038%20Arabic%20Dub.mp4",            
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200039%20Arabic%20Dub.mp4",              
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200040%20Arabic%20Dub.mp4",                         
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200041%20Arabic%20Dub.mp4",            
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200042%20Arabic%20Dub.mp4",                  
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200043%20Arabic%20Dub.mp4",                 
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200044%20Arabic%20Dub.mp4",                       
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200045%20Arabic%20Dub.mp4",                              
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200046%20Arabic%20Dub.mp4",                      
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200047%20Arabic%20Dub.mp4",            
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200048%20Arabic%20Dub.mp4",                             
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200049%20Arabic%20Dub.mp4",
+    "https://archive.org/download/dragon-ball-z-episodes-arabic-dub/Dragon%20Ball%20Z%20Episode%200050%20Arabic%20Dub.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Zoom-And-Bored.mp4", 
+    "https://ww.supercartoons.net/video/Looney-Tunes-There-They-Go-Go-Go.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Whoa-Be-Gone.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-To-Beep-Or-Not-To-Beep.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-The-Whizzard-of-Ow.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-The-Wild-Chase.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Sugar-and-Spies.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-The-Solid-Tin-Coyote.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Stop-Look-And-Hasten.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Shot-and-Bothered.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Ready-Set-Zoom.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Out-and-Out-Rout.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Hook-Line-And-Stinker.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Highway-Runnery.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Gee-Whiz-Z-Z-Z-Z-Z-Z.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Fastest-With-The-Mostest.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Fast-and-Furry-ous.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Clippety-Clobbered.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Chaser-on-the-Rocks.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Chariots-of-Fur.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Boulder-Wham.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Beep-Prepared.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Hairied-and-Hurried.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Beep-Beep.mp4", 
+    "https://ww.supercartoons.net/video/Looney-Tunes-Going-Going-Gosh.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Zipping-Along.mp4",       
+    "https://ww.supercartoons.net/video/Looney-Tunes-Bully-for-Bugs.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Guided-Muscle.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Scrambled-Aches.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Steal-Wool.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Operation-Rabbit.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-To-Hare-Is-Human.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Compressed-Hare.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Rabbits-Feat.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Double-Or-Mutton.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-A-Sheep-in-the-Deep.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Adventures-Of-The-Road-Runner.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Woolen-Under-Where.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Dont-Give-Up-The-Sheep.mp4",      
+    "https://ww.supercartoons.net/video/Looney-Tunes-Congo-Jazz.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Ready-Woolen-And-Able.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-Big-House-Bunny.mp4",
+    "https://ww.supercartoons.net/video/Looney-Tunes-All-A-Bir-R-R-D.mp4",
+  "https://ww.supercartoons.net/video/Walt-Disney-Plutopia.mp4",
+  "https://ww.supercartoons.net/video/Walt-Disney-Plutos-Purchase.mp4",
+  "https://ww.supercartoons.net/video/Walt-Disney-Lend-a-Paw.mp4",
+  "https://ww.supercartoons.net/video/Walt-Disney-RCoon-Dawg.mp4",
+  "https://ww.supercartoons.net/video/Walt-Disney-Mickey-Down-Under.mp4",
+  "https://archive.org/download/walt-disney-home-video-484v22/Mon%20Petit%20%C3%82ne%20%5B1978%5D%20-%20WALT%20DISNEY%20HOME%20VIDEO%20%281986%29.mp4",
+  "https://archive.org/download/tigre-et-dragon/Tigre%20et%20Dragon.mp4",
+                         "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20101.mp4",
+                         "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20102.mp4",
+ "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20103.mp4", 
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20104.mp4",
+ "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20105.mp4", 
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20106.mp4",
+ "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20107.mp4",
+ "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20108.mp4",
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20109.mp4", 
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20110.mp4", 
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20111.mp4",
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20112.mp4",
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20113.mp4", 
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20114.mp4", 
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20115.mp4", 
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20116.mp4",
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20117.mp4",
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20118.mp4",
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20119.mp4",
+        "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20120.mp4",
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20121.mp4",
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20122.mp4", 
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20123.mp4", 
+"https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20124.mp4",
+"https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20125.mp4",
+          "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20126.mp4", 
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20127.mp4", 
+  "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20128.mp4", 
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20129.mp4", 
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20130.mp4",
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20131.mp4",
+      "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20132.mp4", 
+    "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20133.mp4",
+    "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20134.mp4",
+    "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20135.mp4", 
+  "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20136.mp4",
+  "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20137.mp4",
+    "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20138.mp4",
+  "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20139.mp4",
+ "https://archive.org/download/takeshis-castle/Takeshi%27s%20Castle%20-%20140.mp4",
+  "https://ww.b98.tv/video/Walter-Lantz-Productions-Apple-Andy.mp4",
+  "https://ww.b98.tv/video/Hong-Kong-Phooey-Iron-Head-the-Robot-Cotton-Pickin-Pocket-Picker.mp4",
+                        "https://ww.b98.tv/video/Hong-Kong-Phooey-Dr-Disguiso-The-Incredible-Mr-Shrink.mp4",
+                        "https://ww.b98.tv/video/Hong-Kong-Phooey-Mr-Tornado-The-Little-Crook-Who-Wasnt-There.mp4",
+                        "https://ww.b98.tv/video/Hong-Kong-Phooey-The-Great-Choo-Choo-Robbery-Patty-Cake-Patty-Cake-Bakery-Man.mp4",
+                        "https://ww.b98.tv/video/Hong-Kong-Phooey-From-Bad-to-Verse-Rotten-Rhymer-Kong-and-the-Counterfeiters.mp4",
+                        "https://ww.b98.tv/video/Hong-Kong-Phooey-Goldfisher-Green-Thumb.mp4",
+                        "https://ww.b98.tv/video/Hong-Kong-Phooey-The-Abominable-Snowman-Professor-Crosshatch.mp4",
+                        "https://ww.b98.tv/video/Hong-Kong-Phooey-The-Claw-Hong-Kong-Phooey-vs-Hong-Kong-Phooey.mp4",
+                        "https://ww.b98.tv/video/Looney-Tunes-Kitty-Kornered.mp4",
+                        "https://ww.b98.tv/video/The-Sylvester-Tweety-Mysteries-Good-Bird-Hunting.mp4",
+                        "https://ww.b98.tv/video/Looney-Tunes-A-Gruesome-Twosome.mp4",
+                        "https://ww.supercartoons.net/video/Looney-Tunes-Bushy-Hare.mp4",
+                        "https://ia801408.us.archive.org/1/items/HiddenKingdoms2/Hidden%20Kingdoms2.mp4",
+                        "https://archive.org/download/7-asterix.et.les.indiens-1994-french-x-264-pamela-31/7%20Asterix.et.les.indiens%201994%20French%20x264%20Pamela31.mp4",
+                        "https://archive.org/download/AOChezLesBretonsEduArchive/Asterix%20-%201986%20-%20Asterix%20Chez%20Les%20Bretons%20320p.mp4",
+                        "https://archive.org/download/6-asterix-et-le-coup-du-menhir-1989-french-x-264-pamela-31/6%20Asterix%20et%20Le%20coup%20du%20menhir%201989%20French%20x264%20Pamela31.mp4",
+                        "https://archive.org/download/kpoxu-1/Kpoxu1.mp4",
+                        "https://archive.org/download/LuckyLukeLaBalladeDesDaltonFilmEntier1978/Lucky%20Luke%20-%20La%20Ballade%20des%20Dalton%20%28Film%20entier%2C%201978%29.mp4"];
+var videoPlayer = videojs('videoPlayer', {
+      autoplay: true,
+      loop: false,
+      fluid: true,
+      liveui: true
+
+    });
+
+const bigPlayButton = document.querySelector('.vjs-big-play-button');
+const videoElement = document.getElementById('videoPlayer');
+const popup = document.getElementById('popup');
+const videoInput = document.getElementById('videoInput');
+const videoOptions = document.getElementById('videoOptions');
+const x = document.getElementById('searchButton');   
+const t = document.getElementById('mytbl'); 
+var compteur = document.createElement('button');
+var message = "";
+var currentVideoIndex;
+var chaineClicked = false; 
+function searchAndDisplayOptions() {
+
+
+compteur.innerHTML = "";
+
+  var searchQuery = document.getElementById('videoInput').value.toLowerCase();
+
+      if (!isNaN(searchQuery)) {
+        var index = parseInt(searchQuery);
+
+
+
+        if (index >= 0 && index < videos.length) {
+   currentVideoIndex = index;
+videoPlayer.src(videos[currentVideoIndex]);
+videoPlayer.play();   
+         compteur.innerHTML= 'N°'+currentVideoIndex;
+         showPopup("<p>N°" +currentVideoIndex+"</p>");
+
+        } else {
+          compteur.innerHTML =  "";
+         showPopup("<p>N°introuvable!</p>");
+        }
+      } else {
+        var foundVideos = [];
+
+        videos.forEach(function(video, index) {
+          if (video.toLowerCase().includes(searchQuery)) {
+            foundVideos.push('Index ' + index + ': ' + video);
+
+currentVideoIndex = index;
+videoPlayer.src(videos[currentVideoIndex]);
+videoPlayer.play();
+
+compteur.innerHTML= 'N°'+currentVideoIndex;
+ 
+         showPopup("<p>Trouvé(e) N°" +currentVideoIndex+"</p>");
+
+return;
+          }
+        });
+
+        if (foundVideos.length > 0) {
+          
+
+   
+        } else {
+    compteur.innerHTML =  "";
+    showPopup("<p>Aucune video</p>");
+        }
+      }
+
+    }
+
+    x.addEventListener('click', searchAndDisplayOptions);
+  
+document.addEventListener('keydown', function(event) {
+      
+  if (event.key === '+') {
+        playNextVideo();
+      }
+if (event.keyCode === 13) {
+        videoPlayer.play();
+      } else {
+        videoPlayer.pause();
+          
+        }
+  
+    });
+
+const elementEnFocus = document.querySelector(':focus');
+    if (elementEnFocus) {
+      elementEnFocus.focus();
+    } 
+
+    
+
+
+   
+    function playPrevVideo() {
+    try{
+      
+    
+      t.style.display = 'none';
+
+
+
+      if (currentVideoIndex >= 1) {
+        
+      
+        videoPlayer.src(videos[currentVideoIndex]);
+        videoPlayer.play();
+        
+      currentVideoIndex--;
+
+showPopup("<p>précédente("+currentVideoIndex+"/"+videos.length+")</p>");
+    compteur.innerHTML = "N°"+currentVideoIndex;
+      } else {
+ 
+t.style.display = 'block';
+showPopup("<p>Pas de vidéo</p>");
+
+
+
+}
+    
+
+    } catch(error){
+     alert(error.message);
+
+    }
+
+    }
+
+
+function playSuivVideo() {
+    try{
+
+              
+      
+      t.style.display = 'none';
+
+      
+      if (currentVideoIndex < videos.length) {
+       
+        
+      videoPlayer.src(videos[currentVideoIndex]);
+      videoPlayer.play();       
+      currentVideoIndex++;
+compteur.innerHTML = "N°"+currentVideoIndex;
+showPopup("<p>Suivante("+currentVideoIndex+"/"+videos.length+")</p>");
+
+
+      } else {
+currentVideoIndex = videos.length;
+videoPlayer.src(videos[currentVideoIndex]);
+videoPlayer.play();
+        
+
+t.style.display = 'block';
+
+showPopup("<p>Pas de vidéo</p>");
+
+      
+
+
+      }
+
+    } catch(error){
+     alert(error.message);
+
+    }
+
+    }
+
+function showPopup(info) {
+          message = info;  
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 2000)
+  popup.innerHTML = message;
+        }
+    
+
+function playVideoHlsm3u8() {
+
+  
+    
+       videoPlayer.src([{ type: 'application/x-mpegURL', src: videos[currentVideoIndex]}]);
+       videoPlayer.play();
+       currentVideoIndex++;
+
+}
+
+function playVideomp4() {
+
+
+videoPlayer.src([{ type: 'video/mp4', src: videos[currentVideoIndex]}]);
+  videoPlayer.play();
+ currentVideoIndex++;
+
+
+}
+    
+    function playNextVideo() {
+      try{
+
+
+    t.style.display = 'none';
+
+      if (currentVideoIndex < videos.length && videos[currentVideoIndex].endsWith(".m3u8")) {
+        
+       playVideoHlsm3u8();
+         
+      
+        
+      } else if (currentVideoIndex < videos.length && videos[currentVideoIndex].endsWith(".mp4")) {
+
+       playVideomp4();
+} else {
+        currentVideoIndex = 0;                 
+        videoPlayer.src(videos[currentVideoIndex]);
+        videoPlayer.play();
+
+      
+      }
+ 
+ videoPlayer.controls(true);
+ compteur.innerHTML= 'N°'+currentVideoIndex;
+
+
+    } catch(error){
+     alert(error.message);
+
+      }
+    }
+
+    
+
+
+videoInput.addEventListener('keypress', () => {
+
+searchAndDisplayOptions();
+
+});
+
+videoPlayer.ready(function(){
+
+compteur.className = 'vjs-button vjs-control compteur';
+
+compteur.innerHTML= 'N°'+currentVideoIndex;
+
+    
+var leftcontrol = document.createElement('button');
+leftcontrol.className = 'vjs-button vjs-control left-control';
+
+leftcontrol.innerHTML= '&#9664';
+
+
+leftcontrol.addEventListener('click', () => {
+playPrevVideo();
+
+});
+
+
+var rightcontrol = document.createElement('button');
+rightcontrol.className = 'vjs-button vjs-control right-control';
+
+rightcontrol.innerHTML = '&#9654';
+
+
+rightcontrol.addEventListener('click', () => {
+playSuivVideo();
+
+});
+var cls = document.querySelector('.closebtn');
+var openButtons = document.querySelectorAll(".openbtn");
+
+  openButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      var link = button.getAttribute("data-link");
+      ouvrir(link);
+
+    });
+  });
+var listControl = document.createElement('button');
+rightcontrol.className = 'vjs-button vjs-control list-control';
+listControl.innerHTML = "LIST";
+
+cls.addEventListener('click', () => {
+
+closeListe();
+});
+
+
+
+
+listControl.addEventListener('click',() => {
+openListe();
+});
+videoPlayer.controlBar.el().appendChild(leftcontrol);
+videoPlayer.controlBar.el().appendChild(compteur);
+videoPlayer.controlBar.el().appendChild(rightcontrol);
+videoPlayer.controlBar.el().appendChild(listControl);
+     
+});
+
+videoPlayer.on('play', () => {
+   t.style.display = 'none';
+
+});
+    
+    
+videoPlayer.on('pause', () => {
+      t.style.display = 'block';
+});
+  videoPlayer.on('playing', () => {
+t.style.display = 'none';
+
+      if(chaineClicked===true) {
+showPopup("<p>Lire chaine TV</p>");
+compteur.innerHTML= 'TV';        
+chaineClicked = false;
+  } else {
+showPopup("<p>Lécture vidéo N°"+currentVideoIndex+"</p>");
+compteur.innerHTML= 'N°'+currentVideoIndex;
+      }
+      
+    });
+    
+videoPlayer.on('ended', function () {
+   
+      playNextVideo();
+      
+  });
+                            
+  videoPlayer.on('error', function() {
+  
+  if(!navigator.onLine) {
+  showPopup("<p>Vérifier-connéxion</p>");
+  return;
+    }
+  
+showPopup("<p>Erreur fichier!.chercher fichier video valide N° "+currentVideoIndex+"</p>");
+
+});
+
+
+
+videoPlayer.on('timeupdate', () => {
+     
+ if(!navigator.onLine) {
+
+showPopup("<p>Verifier-connexion</p>");
+return;
+}
+
+    
+});
+
+function openListe() {
+  document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeListe() {
+  document.getElementById("mySidenav").style.width = "0";
+}
+
+
+function ouvrir(chaine) {
+chaineClicked = true; 
+videoPlayer.controls(true);
+videoPlayer.src({
+  src: chaine,
+  type: 'application/x-mpegURL'});
+
+videoPlayer.play();
+
+return chaine;
+}
+    playNextVideo();
+});
+
+  </script>
+
+  
+
+
+  
+</body>
+</html>
